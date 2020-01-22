@@ -1,13 +1,17 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Gradle Library Update Request'
+description: 'Create dependency update pull request'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  reportFilePath:
+    description: 'Dependency update report file path'
     required: true
-    default: '1000'
+    default: 'app/build/dependencyUpdates/report.json'
+  gradleFilePath:
+    description: 'Gradle file path'
+    required: true
+    default: 'app/build.gradle'
 outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+  pullRequestUrl: # output will be available to future steps
+    description: 'pull request url'
 runs:
   using: 'node12'
   main: 'dist/index.js'

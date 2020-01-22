@@ -1,23 +1,37 @@
-const wait = require('./wait');
-const process = require('process');
-const cp = require('child_process');
-const path = require('path');
+jest.mock('fs', () => ({
+        readFileSync: jest.fn(filePath => `hoge.huga.piyo:lib:1.0.1`)
+}));
 
-test('throws invalid number', async() => {
-    await expect(wait('foo')).rejects.toThrow('milleseconds not a number');
-});
-
-test('wait 500 ms', async() => {
-    const start = new Date();
-    await wait(500);
-    const end = new Date();
-    var delta = Math.abs(end - start);
-    expect(delta).toBeGreaterThan(450);
-});
+const reporter = require('./reporter');
+const fs = require('fs');
 
 // shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-    process.env['INPUT_MILLISECONDS'] = 500;
-    const ip = path.join(__dirname, 'index.js');
-    console.log(cp.execSync(`node ${ip}`).toString());
+test('test parse', () => {
+  const report = {
+    outdated: {
+      dependencies:[{
+        group: "hoge.huga.piyo",
+        name: "lib",
+        version: "1.0.1",
+        available: {
+          milestone: "1.0.2"
+        }
+      }]
+    }
+  }
+  var parsed = reporter.parse(report)
+  expect(parsed[0].current).toMatch("1.0.1")
+  expect(parsed[0].available).toMatch("1.0.2")
+  expect(parsed[0].library).toMatch("hoge.huga.piyo:lib")
+})
+
+test('test generateReplace', () => {
+  const replaced = reporter.generateReplace('hoge', [{
+    library: "hoge.huga.piyo:lib",
+    current: "1.0.1",
+    available: "1.0.2"
+  }])
+  expect(fs.readFileSync.mock.calls.length).toBe(1);
+  expect(fs.readFileSync.mock.calls[0][0]).toBe('hoge');
+  expect(replaced).toBe('hoge.huga.piyo:lib:1.0.2');
 })
