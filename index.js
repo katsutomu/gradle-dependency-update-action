@@ -9,18 +9,16 @@ async function run() {
     const owner = fullRepository[0];
     const repo = fullRepository[1];
 
-    console.log("start update");
     let files = await reporter.loadGradleFiles()
     files = files.map(function(file){
         file.path = file.path.replace(`${process.env.GITHUB_WORKSPACE}/`, '')
         return file
       }
     )
-    console.log(files);
+
     const paths = files.map(file => file.path)
     const octokit = new github.GitHub(process.env.GITHUB_TOKEN);
     const preFiles = await reporter.fetchRemoteFiles(octokit, paths, process.env.GITHUB_REF, owner, repo)
-    console.log(preFiles);
     const diffFiles = []
     files.forEach(file => {
       let matchedFile = preFiles.find(preFile => preFile.path == file.path)

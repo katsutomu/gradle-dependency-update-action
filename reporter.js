@@ -1,5 +1,6 @@
 const fs = require('fs')
 const glob = require('@actions/glob');
+const core = require('@actions/core');
 const path = require('path');
 
 var reporter = {};
@@ -33,36 +34,11 @@ reporter.fetchRemoteFiles = async function(octokit, filePaths, ref, owner, repo)
   })
   var results = [];
   for await (const result of requests) {
-    console.log(result);
+    core.info(result)
     results.push(result);
   }
 
   return results
-}
-
-reporter.parse = function(dependencies) {
-  if (typeof(dependencies) !== 'object') {
-    return;
-  }
-  return dependencies.outdated.dependencies.map(function(dependency){
-      return {
-        current: dependency.version,
-        available: dependency.available.milestone,
-        library: `${dependency.group}:${dependency.name}`
-      }
-    }
-  )
-}
-
-reporter.generateReplace = function(filePath, reports) {
-  var fileValue = fs.readFileSync(filePath, 'utf8');
-  reports.forEach(dependency => {
-    fileValue = fileValue.replace(
-      `${dependency.library}:${dependency.current}`,
-      `${dependency.library}:${dependency.available}`
-    )
-  })
-  return fileValue
 }
 
 module.exports = reporter;
