@@ -5,14 +5,16 @@
 
 # Create dependency update pull request
 
-Support updating dependent libraries in Gradle. Update dependencies from Gradle Versions Plugin's dependencyUpdates report and generate pull requests. 
+Support updating dependent libraries in Gradle. Make a pull request for Gradle file updated by Gradle Use Latest Versions Plugin.
+
+This plugin depends on the [Gradle Use Latest Versions Plugin](https://github.com/patrikerdes/gradle-use-latest-versions-plugin)
 
 ## Usage
 
-You can now consume the action by referencing the v1 branch
+You can now consume the action by referencing the master branch
+Execute useLatestVersions in advance
 
 ```yaml
-uses: katsutomu/gradle-dependency-update-action@v1
-with:
-  milliseconds: 1000
+run: gradle useLatestVersions
+uses: katsutomu/gradle-dependency-update-action@master
 ```
