@@ -1,7 +1,5 @@
 name: 'Gradle Library Update Request'
 description: 'Create dependency update pull request'
-inputs:
-outputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'
